@@ -21,6 +21,7 @@ string baseKode;
 string nama, nim;
 
 Node *head = nullptr;
+Node *tail = nullptr;
 
 string generateKode()
 {
@@ -41,9 +42,13 @@ void tambahAwal(string tujuan, string status)
     baru->data.kodePenerbangan = generateKode();
     baru->data.tujuan = tujuan;
     baru->data.status = status;
-
     baru->next = head;
     head = baru;
+
+    if (tail == nullptr)
+    {
+        tail = baru;
+    }
 
     cout << "Jadwal berhasil ditambahkan di awal dengan kode: "
          << baru->data.kodePenerbangan << endl;
@@ -56,18 +61,19 @@ void tambahAkhir(string tujuan, string status)
     baru->data.tujuan = tujuan;
     baru->data.status = status;
     baru->next = nullptr;
+
     if (head == nullptr)
     {
-        head = baru;
+        head = tail = baru;
     }
     else
     {
-        Node *temp = head;
-        while (temp->next != nullptr)
-            temp = temp->next;
-        temp->next = baru;
+        tail->next = baru;
+        tail = baru;
     }
-    cout << "Jadwal berhasil ditambahkan di akhir dengan kode: " << baru->data.kodePenerbangan << endl;
+
+    cout << "Jadwal berhasil ditambahkan di akhir dengan kode: "
+         << baru->data.kodePenerbangan << endl;
 }
 
 void sisipJadwal(string tujuan, string status, int posisi)
@@ -102,6 +108,8 @@ void sisipJadwal(string tujuan, string status, int posisi)
     {
         baru->next = head;
         head = baru;
+        if (tail == nullptr)
+            tail = baru;
     }
     else
     {
@@ -112,6 +120,10 @@ void sisipJadwal(string tujuan, string status, int posisi)
         }
         baru->next = temp->next;
         temp->next = baru;
+        if (baru->next == nullptr)
+        {
+            tail = baru;
+        }
     }
 
     cout << "Jadwal berhasil disisipkan dengan kode: "
@@ -127,6 +139,8 @@ void hapusAwal()
     }
     Node *temp = head;
     head = head->next;
+    if (head == nullptr)
+        tail = nullptr; // kalau kosong
     cout << "Jadwal dengan kode " << temp->data.kodePenerbangan
          << " berhasil dihapus.\n";
     delete temp;
@@ -140,18 +154,21 @@ void hapusAkhir()
         return;
     }
     if (head->next == nullptr)
-    {
+    { // hanya 1 node
         cout << "Jadwal dengan kode " << head->data.kodePenerbangan << " berhasil dihapus.\n";
         delete head;
-        head = nullptr;
+        head = tail = nullptr;
         return;
     }
     Node *temp = head;
-    while (temp->next->next != nullptr)
+    while (temp->next != tail)
+    {
         temp = temp->next;
-    cout << "Jadwal dengan kode " << temp->next->data.kodePenerbangan << " berhasil dihapus.\n";
-    delete temp->next;
-    temp->next = nullptr;
+    }
+    cout << "Jadwal dengan kode " << tail->data.kodePenerbangan << " berhasil dihapus.\n";
+    delete tail;
+    tail = temp;
+    tail->next = nullptr;
 }
 
 void updateStatus(string kode)
@@ -210,8 +227,8 @@ int main()
 {
     system("cls");
     cout << "\033[32m";
-
-    cout << "Masukkan Nama : ";
+    cout << "Selamat Datang di Program Sistem Jadwal Penerbangan\n";
+    cout << "\nMasukkan Nama : ";
     getline(cin, nama);
     cout << "Masukkan NIM  : ";
     getline(cin, nim);
