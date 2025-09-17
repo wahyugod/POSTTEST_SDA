@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <cctype>
 using namespace std;
 
 struct Penerbangan
@@ -34,6 +35,18 @@ string generateKode()
     {
         return baseKode + "-" + to_string(counter++);
     }
+}
+
+bool isNumber(const string &str)
+{
+    for (char c : str)
+    {
+        if (!isdigit(c))
+        {
+            return false;
+        }
+    }
+    return !str.empty();
 }
 
 void tambahAwal(string tujuan, string status)
@@ -225,18 +238,31 @@ void tampilkan()
 
 int main()
 {
-    system("cls");
-    cout << "\033[32m";
-    cout << "Selamat Datang di Program Sistem Jadwal Penerbangan\n";
-    cout << "\nMasukkan Nama : ";
-    getline(cin, nama);
-    cout << "Masukkan NIM  : ";
-    getline(cin, nim);
+    do
+    {
+        system("cls");
+        cout << "\033[32m";
+        cout << "Selamat Datang di Program Sistem Jadwal Penerbangan\n";
+        cout << "\nMasukkan Nama : ";
+        getline(cin, nama);
+        cout << "Masukkan NIM  : ";
+        getline(cin, nim);
+        if (!isNumber(nim))
+        {
+            cout << "\n\033[31mError: NIM harus berupa angka!\033[32m\n";
+            system("pause");
+        }
+        else if (nim.length() < 3)
+        {
+            cout << "\n\033[31mError: NIM minimal 3 digit!\033[32m\n";
+            system("pause");
+        }
+    } while (!isNumber(nim) || nim.length() < 3);
 
     string tigaDigit = nim.substr(nim.size() - 3);
     baseKode = "JT-" + tigaDigit;
 
-    int pilihan;
+    string pilihan;
     do
     {
         system("cls");
@@ -268,7 +294,7 @@ int main()
         cin.ignore();
         system("cls");
 
-        if (pilihan == 1)
+        if (pilihan == "1")
         {
             cout << "==================================================\n";
             cout << "|            TAMBAH JADWAL PENERBANGAN           |\n";
@@ -282,21 +308,7 @@ int main()
             cout << "Tekan Enter untuk melanjutkan...";
             cin.get();
         }
-        else if (pilihan == 1)
-        {
-            cout << "==================================================\n";
-            cout << "|            TAMBAH JADWAL PENERBANGAN           |\n";
-            cout << "==================================================\n";
-            string tujuan, status;
-            cout << "Masukkan tujuan: ";
-            getline(cin, tujuan);
-            cout << "Masukkan status: ";
-            getline(cin, status);
-            tambahAwal(tujuan, status);
-            cout << "Tekan Enter untuk melanjutkan...";
-            cin.get();
-        }
-        else if (pilihan == 2)
+        else if (pilihan == "2")
         {
             cout << "==================================================\n";
             cout << "|            TAMBAH JADWAL PENERBANGAN           |\n";
@@ -310,7 +322,7 @@ int main()
             cout << "Tekan Enter untuk melanjutkan...";
             cin.get();
         }
-        else if (pilihan == 3)
+        else if (pilihan == "3")
         {
             cout << "==================================================\n";
             cout << "|           SISIPKAN JADWAL PENERBANGAN          |\n";
@@ -321,7 +333,7 @@ int main()
             cout << "Tekan Enter untuk melanjutkan...";
             cin.get();
         }
-        else if (pilihan == 4)
+        else if (pilihan == "4")
         {
             cout << "==================================================\n";
             cout << "|            HAPUS JADWAL PENERBANGAN            |\n";
@@ -330,7 +342,7 @@ int main()
             cout << "Tekan Enter untuk melanjutkan...";
             cin.get();
         }
-        else if (pilihan == 5)
+        else if (pilihan == "5")
         {
             cout << "==================================================\n";
             cout << "|            HAPUS JADWAL PENERBANGAN            |\n";
@@ -339,7 +351,7 @@ int main()
             cout << "Tekan Enter untuk melanjutkan...";
             cin.get();
         }
-        else if (pilihan == 6)
+        else if (pilihan == "6")
         {
             cout << "==================================================\n";
             cout << "|            UPDATE JADWAL PENERBANGAN           |\n";
@@ -350,7 +362,7 @@ int main()
             cout << "Tekan Enter untuk melanjutkan...";
             cin.get();
         }
-        else if (pilihan == 7)
+        else if (pilihan == "7")
         {
             cout << "==================================================\n";
             cout << "|            DAFTAR JADWAL PENERBANGAN           |\n";
@@ -359,8 +371,16 @@ int main()
             cout << "Tekan Enter untuk melanjutkan...";
             cin.get();
         }
-    } while (pilihan != 0);
+        else if (pilihan == "0")
+        {
+            cout << "Terima kasih telah menggunakan sistem!\n";
+        }
+        else
+        {
+            cout << "\033[31mError: Pilihan tidak valid.\n\033[32m";
+            system("pause");
+        }
+    } while (pilihan != "0");
 
-    cout << "Terima kasih telah menggunakan sistem!\n";
     return 0;
 }
